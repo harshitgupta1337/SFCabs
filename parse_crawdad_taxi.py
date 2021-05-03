@@ -83,13 +83,18 @@ def main(directory,operation, min_time=None ,max_time=None,time_delta=None):
     elif operation == "generate":
         index=0
         dirname = "/tmp/crawdad_processed"
+        minTime = None 
+        for (name, rows) in data.items():
+            for row in rows:
+                if not minTime or minTime > row[2]:
+                    minTime = row[2]
         if not os.path.exists(dirname):
             os.makedirs(dirname)
         for (name, rows) in data.items():
             with open(os.path.join(dirname,'{}.txt'.format(index)), 'w') as f:
                 write = csv.writer(f,delimiter=' ')
                 for row in rows:
-                    write.writerow(["{:.5f}".format(row[0]),"{:.5f}".format(row[1]),row[2]])
+                    write.writerow(["{:.5f}".format(row[0]),"{:.5f}".format(row[1]),row[2]-minTime])
                 #write.writerows(rows)
             index+=1
         print("Data generated in {}".format(dirname))
